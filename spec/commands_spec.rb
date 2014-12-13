@@ -402,6 +402,19 @@ describe Commands do
     end
   end
 
+  describe 'when executing the meta command' do
+    it 'must fetch a directory or file meta when given args' do
+      TestUtils.not_structure(client, state, 'test')
+      Commands::MKDIR.exec(client, state, '/testing/test')
+      state.metadata('/testing/test').wont_be_nil
+    end
+
+    it 'must fail with UsageError when given no args' do
+      proc { Commands::META.exec(client, state) }
+        .must_raise Commands::UsageError
+    end
+  end
+
   describe 'when executing the mv command' do
     before do
       state.pwd = TestUtils::TEST_ROOT

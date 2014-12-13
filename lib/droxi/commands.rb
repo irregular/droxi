@@ -342,6 +342,23 @@ module Commands
     end
   )
 
+  # Get file/dir's metadata.
+  META = Command.new(
+    'meta REMOTE_FILE_OR_DIR...',
+    'Get file/dir\'s metadata.',
+    lambda do |client, state, args|
+      extract_flags(META.usage, args, {})
+      args.each do |arg|
+        try_and_handle(DropboxError) do
+          path = state.resolve_path(arg)
+          metadata = client.metadata(path)
+          state.cache.add(metadata)
+          puts metadata
+        end
+      end
+    end
+  )
+
   # Move/rename remote files.
   MV = Command.new(
     'mv [-f] REMOTE_FILE... REMOTE_FILE',
